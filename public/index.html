@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure File Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload a File</h2>
+    <form id="uploadForm">
+      <label for="folder">Select Folder</label>
+      <select id="folder" name="folder" required>
+        <option value="folder1">Folder 1</option>
+        <option value="folder2">Folder 2</option>
+        <option value="folder3">Folder 3</option>
+      </select>
+
+      <label for="file">Select File</label>
+      <input type="file" id="file" name="file" required />
+
+      <button type="submit">Upload</button>
+    </form>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const responseDiv = document.getElementById("response");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          responseDiv.innerHTML = `<p style="color:green;">${result.message}<br>File URL: <a href="${result.fileUrl}" target="_blank">${result.fileUrl}</a></p>`;
+        } else {
+          responseDiv.innerHTML = `<p style="color:red;">${result.message}</p>`;
+        }
+      } catch (error) {
+        responseDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
