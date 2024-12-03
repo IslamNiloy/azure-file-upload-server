@@ -8,6 +8,9 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Serve static files (frontend)
+app.use(express.static(path.join(__dirname, "public")));
+
 // Multer setup to handle file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -25,6 +28,12 @@ app.get("/", (req, res) => {
   res.send("Azure File Upload Server is running!");
 });
 
+// Render the upload page with the selected folder pre-selected
+app.get("/upload-page", (req, res) => {
+  const folder = req.query.folder || "default-folder";
+  res.sendFile(path.join(__dirname, "public", "index.html"), { folder });
+});
+
 // API to upload files
 app.post("/upload", upload.single("file"), async (req, res) => {
   try {
@@ -32,7 +41,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       return res.status(400).send("No file uploaded.");
     }
 
-    const folderName = req.query.folder || "default-folder";
+    const folderName = req.body.folder || "default-folder";
     const blobName = `${folderName}/${path.basename(req.file.originalname)}`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 

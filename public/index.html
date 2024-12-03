@@ -61,6 +61,13 @@
   </div>
 
   <script>
+    // Pre-select the folder based on the query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const folder = urlParams.get("folder");
+    if (folder) {
+      document.getElementById("folder").value = folder;
+    }
+
     const form = document.getElementById("uploadForm");
     const responseDiv = document.getElementById("response");
 
