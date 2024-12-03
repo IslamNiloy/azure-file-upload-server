@@ -35,34 +35,41 @@ app.get("/upload-page", (req, res) => {
 
 // API to upload files
 app.post("/upload", upload.single("file"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).send("No file uploaded.");
+    try {
+      if (!req.file) {
+        return res.status(400).send("No file uploaded.");
+      }
+  
+      const { folder, dealName } = req.body;
+      if (!folder || !dealName) {
+        return res.status(400).send({
+          success: false,
+          message: "Folder and deal name are required.",
+        });
+      }
+  
+      const blobName = `${dealName}/${folder}/${path.basename(req.file.originalname)}`;
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+  
+      // Upload the file
+      await blockBlobClient.uploadData(req.file.buffer, {
+        blobHTTPHeaders: { blobContentType: req.file.mimetype },
+      });
+  
+      res.status(200).send({
+        success: true,
+        message: "File uploaded successfully.",
+        fileUrl: blockBlobClient.url,
+      });
+    } catch (err) {
+      console.error("Error uploading file:", err.message);
+      res.status(500).send({
+        success: false,
+        message: "Failed to upload file.",
+        error: err.message,
+      });
     }
-
-    const folderName = req.body.folder || "default-folder";
-    const blobName = `${folderName}/${path.basename(req.file.originalname)}`;
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    // Upload the file
-    await blockBlobClient.uploadData(req.file.buffer, {
-      blobHTTPHeaders: { blobContentType: req.file.mimetype },
-    });
-
-    res.status(200).send({
-      success: true,
-      message: "File uploaded successfully.",
-      fileUrl: blockBlobClient.url,
-    });
-  } catch (err) {
-    console.error("Error uploading file:", err.message);
-    res.status(500).send({
-      success: false,
-      message: "Failed to upload file.",
-      error: err.message,
-    });
-  }
-});
+  });
 
 // Start the server
 app.listen(port, () => {

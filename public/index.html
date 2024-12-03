@@ -9,6 +9,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
+      background-color: #f9f9f9;
     }
     .container {
       max-width: 600px;
@@ -16,6 +17,12 @@
       padding: 20px;
       border: 1px solid #ddd;
       border-radius: 5px;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
     }
     label {
       display: block;
@@ -28,6 +35,7 @@
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      box-sizing: border-box;
     }
     button {
       background-color: #007BFF;
@@ -38,6 +46,17 @@
     button:hover {
       background-color: #0056b3;
     }
+    #response {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -45,6 +64,7 @@
     <h2>Upload a File</h2>
     <form id="uploadForm">
       <input type="hidden" id="folder" name="folder" value="" />
+      <input type="hidden" id="dealName" name="dealName" value="" />
 
       <label for="file">Select File</label>
       <input type="file" id="file" name="file" required />
@@ -56,11 +76,17 @@
   </div>
 
   <script>
-    // Pre-select the folder based on the query parameter
+    // Pre-select folder and dealName based on the query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const folder = urlParams.get("folder");
+    const dealName = urlParams.get("dealName");
+
     if (folder) {
       document.getElementById("folder").value = folder;
+    }
+
+    if (dealName) {
+      document.getElementById("dealName").value = dealName;
     }
 
     const form = document.getElementById("uploadForm");
@@ -79,7 +105,11 @@
 
         const result = await response.json();
         if (result.success) {
-          responseDiv.innerHTML = `<p style="color:green;">${result.message}<br>File URL: <a href="${result.fileUrl}" target="_blank">${result.fileUrl}</a></p>`;
+          responseDiv.innerHTML = `
+            <p style="color:green;">
+              ${result.message}<br>
+              File URL: <a href="${result.fileUrl}" target="_blank">${result.fileUrl}</a>
+            </p>`;
         } else {
           responseDiv.innerHTML = `<p style="color:red;">${result.message}</p>`;
         }
