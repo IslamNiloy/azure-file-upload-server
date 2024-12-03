@@ -30,8 +30,7 @@ app.get("/", (req, res) => {
 
 // Render the upload page with the selected folder pre-selected
 app.get("/upload-page", (req, res) => {
-  const folder = req.query.folder || "default-folder";
-  res.sendFile(path.join(__dirname, "public", "index.html"), { folder });
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // API to upload files

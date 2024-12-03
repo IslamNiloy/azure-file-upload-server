@@ -22,7 +22,7 @@
       margin-bottom: 5px;
       font-weight: bold;
     }
-    input, select, button {
+    input, button {
       width: 100%;
       padding: 10px;
       margin-bottom: 15px;
@@ -44,12 +44,7 @@
   <div class="container">
     <h2>Upload a File</h2>
     <form id="uploadForm">
-      <label for="folder">Select Folder</label>
-      <select id="folder" name="folder" required>
-        <option value="folder1">Folder 1</option>
-        <option value="folder2">Folder 2</option>
-        <option value="folder3">Folder 3</option>
-      </select>
+      <input type="hidden" id="folder" name="folder" value="" />
 
       <label for="file">Select File</label>
       <input type="file" id="file" name="file" required />
