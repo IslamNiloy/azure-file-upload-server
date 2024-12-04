@@ -48,7 +48,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         });
       }
   
-      const blobName = `${dealName}/${folder}/${path.basename(req.file.originalname)}`;
+      const blobName = `Newsome/${dealName}/${folder}/${path.basename(req.file.originalname)}`;
       const blockBlobClient = containerClient.getBlockBlobClient(blobName);
   
       // Upload the file
